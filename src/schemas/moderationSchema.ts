@@ -6,6 +6,10 @@ interface GuildSchema {
         moderation: {
             enabled: boolean;
             channelId: String;
+            kicks: {
+                userId: String;
+                reason: String;
+            }[];
         }
     }
 }
@@ -15,7 +19,11 @@ export default model<GuildSchema>("GuildSchema", new Schema<GuildSchema>({
     logs: {
         moderation: {
             enabled: Boolean,
-            channelId: String
+            channelId: String,
+            kicks: [{
+                userId: String,
+                reason: String
+            }]
         }
     }
 },{

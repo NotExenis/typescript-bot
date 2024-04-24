@@ -2,6 +2,8 @@ import { Client } from "discord.js";
 import { config } from "./config";
 import { commands } from "./commands";
 import { deployCommands } from "./deploy-commands";
+import fs from 'fs';
+import path from 'path';
 
 const client = new Client({
     intents:[
@@ -30,5 +32,6 @@ client.on ("interactionCreate", async (interaction) => {
         commands[commandName as keyof typeof commands].execute(interaction);
     }
 })
+
 
 client.login(config.DISCORD_TOKEN)

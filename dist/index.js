@@ -28,7 +28,7 @@ client.once("ready", () => __awaiter(void 0, void 0, void 0, function* () {
 client.on("guildCreate", (guild) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, deploy_commands_1.deployCommands)({ guildId: guild.id });
 }));
-client.on("ïnteractionCreate", (interaction) => __awaiter(void 0, void 0, void 0, function* () {
+client.on("interactionCreate", (interaction) => __awaiter(void 0, void 0, void 0, function* () {
     if (!interaction.isCommand()) {
         return;
     }
