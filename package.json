@@ -1,0 +1,32 @@
+{
+  "name": "discord-bot-exenis",
+  "version": "1.0.0",
+  "description": "Oil up",
+  "main": "index.tx",
+  "start": "node dist/index.ts",
+  "build": "tsup src/denx.ts --minify",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/NotExenis/typscript_bot.git"
+  },
+  "author": "Exenis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NotExenis/typscript_bot/issues"
+  },
+  "homepage": "https://github.com/NotExenis/typscript_bot#readme",
+  "devDependencies": {
+    "tsup": "^8.0.2",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "mongoose": "^8.3.2"
+  }
+}
