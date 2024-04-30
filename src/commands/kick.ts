@@ -8,7 +8,7 @@ import {
   GuildMemberRoleManager,
 } from "discord.js";
 
-import GuildSchema from "../schemas/moderationSchema";
+import { KickModel } from "../schemas/kickschema";
 
 export const data = new SlashCommandBuilder()
   .setName("kick")
@@ -26,11 +26,15 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  const { PermissionBitsFields } = require("discord.js");
+  const { PermissionBitFields } = require("discord.js");
   const target = interaction.options.getMember("user") as GuildMember;
   const reason = interaction.options.getString("reason") || "No reason given";
-
   const errorEmbed = new EmbedBuilder().setColor("Red");
+
+  if (!interaction.member?.permissions)
+    return interaction.reply({
+      embeds: [errorEmbed.setDescription("You don't have perms")],
+    });
 
   if (!target)
     return interaction.reply({
@@ -91,7 +95,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   try {
     await target.kick(reason);
-  } catch {
+  } catch (error) {
+    console.log(error);
     return interaction.reply({
       embeds: [
         errorEmbed.setDescription(
@@ -124,24 +129,25 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     ],
   });
 
-  const userId = target.id;
+  const userId: String = interaction.id;
   const guildId = interaction.guild?.id;
   const kickReason = reason;
 
   try {
-    const kickDocument = new GuildSchema({
-      guildId: guildId,
-      logs: {
-        moderation: {
-          enabled: true,
-          channelId: interaction.channel?.id,
-          userid: userId,
-          reason: reason,
-        },
-      },
-    });
+    let kickDocument = await KickModel.findOne({ guildId, userId });
 
-    await kickDocument.save();
+    if (kickDocument) {
+      kickDocument.reason += `, ${reason || "No reason given"}`;
+      await kickDocument.save();
+    } else {
+      kickDocument = new KickModel({
+        guildId: guildId,
+        userId: userId,
+        reason: reason || "No reason given",
+      });
+
+      await kickDocument.save();
+    }
   } catch (error) {
     console.log(error);
   }
