@@ -28,8 +28,10 @@ client.once("ready", async () => {
   await deployCommands();
 });
 
+
+
 client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) {
+    if (!interaction.isCommand()) {
     return;
   }
   const { commandName } = interaction;

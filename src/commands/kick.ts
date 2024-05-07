@@ -26,10 +26,19 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  const { PermissionBitFields } = require("discord.js");
   const target = interaction.options.getMember("user") as GuildMember;
   const reason = interaction.options.getString("reason") || "No reason given";
   const errorEmbed = new EmbedBuilder().setColor("Red");
+  const member = interaction.member as GuildMember;
+
+  if(!member.permissions.has(PermissionFlagsBits.KickMembers)) {
+    return await interaction.reply({
+      embeds: [errorEmbed.setDescription("You do not have kick perms")],
+      ephemeral: true,
+    })
+  } else {
+    console.log("something went wrong")
+  }
 
   if (!interaction.member?.permissions)
     return interaction.reply({
@@ -129,7 +138,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     ],
   });
 
-  const userId: String = interaction.id;
+  const userId: String = target.id;
   const guildId = interaction.guild?.id;
   const kickReason = reason;
 
