@@ -6,6 +6,8 @@ import {
   ChatInputCommandInteraction,
 } from "discord.js";
 
+import { banModel } from "../schemas/banSchema";
+
 export const data = new SlashCommandBuilder()
   .setName("ban")
   .setDescription("Ban a user from the server")
@@ -39,13 +41,6 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     });
   }
 
-  if (!target.bannable) {
-    interaction.reply({
-      embeds: [errorEmbed.setDescription("This user is not bannable")],
-      ephemeral: true,
-    });
-  }
-
   try {
     await target.ban({ reason });
     interaction.reply({
@@ -75,4 +70,28 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   } catch (error) {
     console.log(error);
   }
+
+  try {
+
+    const guildId = interaction.guild?.id;
+    const targetId = target.id;
+    let BanDocument = await banModel.findOne({ guildId, targetId });
+
+    if (BanDocument) {
+      BanDocument.reason += `, ${reason || "No reason given"}`;
+      await BanDocument.save();
+    } else {
+      BanDocument = new banModel({
+        guildId: guildId,
+        targetId: targetId,
+        reason: reason || "No reason given",
+        moderator: member.id
+      });
+
+      await BanDocument.save();
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
+
