@@ -138,12 +138,12 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     ],
   });
 
-  const userId: String = target.id;
+  const targetId: String = target.id;
   const guildId = interaction.guild?.id;
   const kickReason = reason;
 
   try {
-    let kickDocument = await KickModel.findOne({ guildId, userId });
+    let kickDocument = await KickModel.findOne({ guildId, targetId });
 
     if (kickDocument) {
       kickDocument.reason += `, ${reason || "No reason given"}`;
@@ -151,8 +151,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     } else {
       kickDocument = new KickModel({
         guildId: guildId,
-        userId: userId,
+        targetId: targetId,
         reason: reason || "No reason given",
+        moderator: member.id
       });
 
       await kickDocument.save();
