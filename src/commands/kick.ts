@@ -140,7 +140,6 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const targetId: String = target.id;
   const guildId = interaction.guild?.id;
-  const kickReason = reason;
 
   try {
     let kickDocument = await KickModel.findOne({ guildId, targetId });
